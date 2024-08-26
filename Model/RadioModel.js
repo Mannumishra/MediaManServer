@@ -1,10 +1,6 @@
 const mongoose = require("mongoose")
 
 const RadioSchema = new mongoose.Schema({
-    radioName: {
-        type: String,
-        // required: true
-    },
     station: {
         type: String,
         required: true
