@@ -1,11 +1,25 @@
 const mongoose = require("mongoose");
 
 const cartItemSchema = new mongoose.Schema({
-    radio: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Radio",
-        // required: true
+    station: {
+        type: String,
+        required: true
     },
+    state: {
+        type: String,
+        required: true
+    },
+    city: {
+        type: String,
+        required: true
+    },
+    rate: {
+        type: Number,
+        required: true
+    },
+    image: {
+        type: String,
+    }
 });
 
 const radioSchema = new mongoose.Schema({

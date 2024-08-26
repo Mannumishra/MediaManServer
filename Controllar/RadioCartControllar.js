@@ -35,9 +35,10 @@ const createRecord = async (req, res) => {
 
 const getAllRecords = async (req, res) => {
     try {
-        const records = await RadioCartData.find().populate('radiocart.radioItem');
+        const records = await RadioCartData.find();
         res.status(200).json({ success: true, data: records });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
@@ -45,8 +46,8 @@ const getAllRecords = async (req, res) => {
 
 const getRecordById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const record = await RadioCartData.findById(id).populate('radiocart.radioItem');
+        // const { id } = req.params;
+        const record = await RadioCartData.findOne({_id:req.params._id});
 
         if (!record) {
             return res.status(404).json({ success: false, message: "Record not found" });
@@ -54,6 +55,7 @@ const getRecordById = async (req, res) => {
 
         res.status(200).json({ success: true, data: record });
     } catch (error) {
+        clg
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
