@@ -9,7 +9,7 @@ const createRecord = async (req, res) => {
         if (!radiocategoryName) {
             return res.status(402).json({
                 success: false,
-                message: "Cinema Name is must required"
+                message: "Radio Name is must required"
             })
         }
         else {
@@ -21,21 +21,21 @@ const createRecord = async (req, res) => {
                 if (exitname) {
                     return res.status(403).json({
                         success: false,
-                        message: "this cinema name is already exits"
+                        message: "this Radio name is already exits"
                     })
                 }
                 const data = new Radiocategory({ radiocategoryName, radioimage })
                 await data.save()
                 res.status(200).json({
                     success: true,
-                    message: "New Cinema Addedd successfully!!!!",
+                    message: "New Radio Addedd successfully!!!!",
                     data: data
                 })
             }
             else {
                 return res.status(402).json({
                     success: false,
-                    message: "Cinema Image is must required"
+                    message: "Radio Image is must required"
                 })
             }
         }
@@ -48,19 +48,19 @@ const createRecord = async (req, res) => {
     }
 }
 
-const getcinema = async (req, res) => {
+const getRadio = async (req, res) => {
     try {
         const data = await Radiocategory.find()
         if (!data) {
            return res.status(404).json({
                 success: false,
-                message: "Cinema Not Found"
+                message: "Radio Not Found"
             })
         }
         else {
             res.status(200).json({
                 success: true,
-                message: "All Cinema found successfully",
+                message: "All Radio found successfully",
                 data: data
             })
         }
@@ -72,19 +72,19 @@ const getcinema = async (req, res) => {
     }
 }
 
-const getSinglecinema = async (req, res) => {
+const getSingleRadio = async (req, res) => {
     try {
         const data = await Radiocategory.findOne({ _id: req.params._id })
         if (!data) {
            return res.status(404).json({
                 success: false,
-                message: "Cinema Not Found"
+                message: "Radio Not Found"
             })
         }
         else {
             res.status(200).json({
                 success: true,
-                message: "All Cinema found successfully",
+                message: "All Radio found successfully",
                 data: data
             })
         }
@@ -97,13 +97,13 @@ const getSinglecinema = async (req, res) => {
 }
 
 
-const updatecinema = async (req, res) => {
+const updateRadio = async (req, res) => {
     try {
         const data = await Radiocategory.findOne({ _id: req.params._id });
         if (!data) {
             return res.status(404).json({
                 success: false,
-                message: "Cinema Not Found"
+                message: "Radio Not Found"
             });
         }
 
@@ -122,11 +122,11 @@ const updatecinema = async (req, res) => {
         await data.save();
         res.status(200).json({
             success: true,
-            message: "Cinema updated successfully",
+            message: "Radio updated successfully",
             data: data
         });
     } catch (error) {
-        console.error("Error updating cinema:", error); // Log the error for debugging
+        console.error("Error updating Radio:", error); // Log the error for debugging
         res.status(500).json({
             success: false,
             message: "Internal Server Error"
@@ -135,13 +135,13 @@ const updatecinema = async (req, res) => {
 }
 
 
-const deletecinema = async (req, res) => {
+const deleteRadio = async (req, res) => {
     try {
         const data = await Radiocategory.findOne({ _id: req.params._id })
         if (!data) {
            return res.status(404).json({
                 success: false,
-                message: "Cinema Not Found"
+                message: "Radio Not Found"
             })
         }
         else {
@@ -152,7 +152,7 @@ const deletecinema = async (req, res) => {
             await data.deleteOne()
             res.status(200).json({
                 success: true,
-                message: " Cinema delete successfully",
+                message: " Radio delete successfully",
                 data: data
             })
         }
@@ -166,5 +166,5 @@ const deletecinema = async (req, res) => {
 
 
 module.exports = {
-    createRecord, getcinema, getSinglecinema, deletecinema ,updatecinema
+    createRecord, getRadio, getSingleRadio, deleteRadio ,updateRadio
 }
