@@ -12,33 +12,14 @@ const fetchCategoryData = async () => {
             categoryMap[category.categoryName] = category.image;
         });
         return categoryMap;
+       
     } catch (error) {
         console.error("Error fetching category data:", error.message);
         throw error;
     }
 };
 
-const categoryData = async (req, res) => {
-    try {
-        const data = await Category.find();
-        if (data.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Data Not Found",
-            });
-        }
-        res.status(200).json({
-            success: true,
-            message: "Data Found",
-            data: data,
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Internal Server Error",
-        });
-    }
-};
+
 
 // Endpoint to import data from Excel
 const importData = async (req, res) => {
@@ -67,41 +48,45 @@ const importData = async (req, res) => {
             image: categoryMap[row['CINEMA CHAIN']] || ''
         });
 
-        const limitedData = data.slice(0, 10000);
+        const cleanedData = data.map(cleanRow);
 
-        // Process and save each row
-        const savePromises = limitedData.map(async (row) => {
-            try {
-                const cinema = new Cinema(cleanRow(row));
+        // Remove rows that are missing required fields
+        const validData = cleanedData.filter(row => 
+            row.seatingCapacity && row.baseRate10SecWeek && row.baseRateBB10SecWeek && row.baseRateMBB10SecWeek
+        );
 
-                if (!cinema.seatingCapacity || !cinema.baseRate10SecWeek || !cinema.baseRateBB10SecWeek || !cinema.baseRateMBB10SecWeek) {
-                    console.error(`Missing required fields for cinema ${cinema.cinema}`);
-                    return { success: false, cinema: cinema.cinema, error: 'Required fields are missing' };
-                }
+        // Check for existing records in the database
+        const existingCinemas = await Cinema.find({
+            cinemaChain: { $in: validData.map(row => row.cinemaChain) },
+            cinema: { $in: validData.map(row => row.cinema) },
+        }).select('cinemaChain cinema').lean();
 
-                await cinema.save();
-                return { success: true, cinema: cinema.cinema };
-            } catch (error) {
-                console.error(`Error saving cinema ${row['CINEMA']}:`, error);
-                return { success: false, cinema: row['CINEMA'], error: error.message };
-            }
-        });
+        const existingCinemaSet = new Set(existingCinemas.map(c => `${c.cinemaChain}-${c.cinema}`));
 
-        const results = await Promise.all(savePromises);
+        // Filter out records that already exist in the database
+        const newCinemas = validData.filter(row => 
+            !existingCinemaSet.has(`${row.cinemaChain}-${row.cinema}`)
+        );
+
+        if (newCinemas.length > 0) {
+            await Cinema.insertMany(newCinemas);
+        }
+
         fs.unlinkSync(filePath);
 
-        const failedResults = results.filter(result => !result.success);
-        if (failedResults.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Some records could not be saved",
-                failedRecords: failedResults,
+        if (newCinemas.length < validData.length) {
+            return res.status(200).json({
+                success: true,
+                message: "Data imported with some duplicates skipped",
+                insertedRecords: newCinemas.length,
+                skippedRecords: validData.length - newCinemas.length,
             });
         }
 
         res.status(200).json({
             success: true,
             message: "Data imported successfully",
+            insertedRecords: newCinemas.length,
         });
 
     } catch (error) {
@@ -112,6 +97,7 @@ const importData = async (req, res) => {
         });
     }
 };
+
 
 // Endpoint to get records with pagination
 const getRecord = async (req, res) => {
@@ -344,6 +330,5 @@ const searchRecords = async (req, res) => {
 module.exports = {
     importData,
     getRecord,
-    categoryData,
     deleteAllRecord, deleteRecord, getSingleRecord, createManualRecord, updateCinema ,getTotalRecord ,searchRecords
 };
