@@ -35,7 +35,7 @@ const createRecord = async (req, res) => {
             else {
                 return res.status(402).json({
                     success: false,
-                    message: "Cinema Image is must required"
+                    message: "Blog Image is must required"
                 })
             }
         }
@@ -55,7 +55,7 @@ const getcinema = async (req, res) => {
         if (!data) {
             return res.status(404).json({
                 success: false,
-                message: "Cinema Not Found"
+                message: "Blog Not Found"
             })
         }
         else {
@@ -79,7 +79,7 @@ const getSinglecinema = async (req, res) => {
         if (!data) {
             return res.status(404).json({
                 success: false,
-                message: "Cinema Not Found"
+                message: "Blog Not Found"
             })
         }
         else {
@@ -104,7 +104,7 @@ const updatecinema = async (req, res) => {
         if (!data) {
             return res.status(404).json({
                 success: false,
-                message: "Cinema Not Found"
+                message: "Blog Not Found"
             });
         }
 
@@ -124,7 +124,7 @@ const updatecinema = async (req, res) => {
         await data.save();
         res.status(200).json({
             success: true,
-            message: "Cinema updated successfully",
+            message: "Blog updated successfully",
             data: data
         });
     } catch (error) {
@@ -143,7 +143,7 @@ const deletecinema = async (req, res) => {
         if (!data) {
             return res.status(404).json({
                 success: false,
-                message: "Cinema Not Found"
+                message: "Blog Not Found"
             })
         }
         else {

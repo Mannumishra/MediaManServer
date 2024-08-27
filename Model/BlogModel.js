@@ -13,7 +13,7 @@ const blogSchema = new mongoose.Schema({
         type: String,
         required: [true, "blog Image is must required"]
     }
-})
+}, { timestamps: true })
 
 
 const Blog = mongoose.model("blog", blogSchema)
