@@ -9,7 +9,8 @@ exports.createContact = async (req, res) => {
     const newContact = new Contact({ name, phone, email, message, lookingfor });
     await newContact.save();
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: "smtp.gmail.com",
+      port: 587,
       auth: {
         user: 'mediamanmd@gmail.com',
         pass: 'tuls epem fvwb pltc'
