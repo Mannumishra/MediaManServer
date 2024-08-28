@@ -26,7 +26,7 @@ const cinemaSchema = new mongoose.Schema({
         // required: [true, "Cinema Name is required"]
     },
     audi: {
-        type: String,
+        type: mongoose.Schema.Types.Mixed,
         // required: [true, "Audi is required"]
     },
     seatingCapacity: {

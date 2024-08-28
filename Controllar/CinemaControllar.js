@@ -40,7 +40,7 @@ const importData = async (req, res) => {
             city: (row['CITY'] || '').trim(),
             category: (row['CINEMA CATEGORY'] || '').trim(),
             cinema: (row['CINEMA'] || '').trim(),
-            audi: typeof row['AUDI'] === 'string' ? row['AUDI'].trim() : '',
+            audi: typeof row['AUDI'] === 'string' ? row['AUDI'].trim() : row['AUDI'] !== undefined ? row['AUDI'].toString().trim() : '',
             seatingCapacity: row[' SEATING CAPACITY '] ? parseInt(row[' SEATING CAPACITY '].toString().trim()) : null,
             baseRate10SecWeek: row[' BASE RATE/10 SEC/WEEK '] ? parseInt(row[' BASE RATE/10 SEC/WEEK '].toString().trim()) : null,
             baseRateBB10SecWeek: row[' BASE RATE BB /10 SEC/WEEK '] ? parseInt(row[' BASE RATE BB /10 SEC/WEEK '].toString().trim()) : null,
